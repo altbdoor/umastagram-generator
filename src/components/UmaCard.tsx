@@ -36,7 +36,7 @@ const ctxMeasure = (ctx: CanvasRenderingContext2D, text: string) => {
   const dimension = ctx.measureText(text || "hello");
   return {
     width: dimension.width,
-    height: dimension.actualBoundingBoxAscent + dimension.actualBoundingBoxDescent,
+    height: dimension.fontBoundingBoxAscent + dimension.fontBoundingBoxDescent,
   };
 };
 
@@ -249,11 +249,11 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
       );
 
       ctx.fillText(tagLine1, 20 + usernameWidth, tagY1);
-      const tagY2 = tagY1 + usernameHeight + 8;
+      const tagY2 = tagY1 + usernameHeight + 4;
       ctx.fillText(tagLine2, 20, tagY2);
 
       // cygames logo
-      const cygamesHeight = usernameHeight + 2;
+      const cygamesHeight = usernameHeight;
       const cygamesWidth = computeImgWidth(cygames, cygamesHeight);
 
       ctx.font = `700 16px ${sansSerifFont}`;
