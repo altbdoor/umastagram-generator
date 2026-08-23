@@ -119,7 +119,7 @@ export function ImageDialog(props: ImageDialogProps) {
               {previewUrl ? "Change image" : "Click here to begin"}
 
               <div hidden>
-                <input type="file" accept="image/*" capture="environment" onChange={onFileChange} />
+                <input type="file" accept="image/*" onChange={onFileChange} />
               </div>
             </Button>
 

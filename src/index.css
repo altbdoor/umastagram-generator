@@ -1,3 +1,6 @@
+@import "@fontsource/inter-tight/400.css";
+@import "@fontsource/inter-tight/700.css";
+
 /* https://www.dafont.com/indigo-daisy.font */
 @font-face {
   font-family: "indigo_daisy";
@@ -10,6 +13,7 @@
 
 html {
   --text-base: 16px;
+  --font-sans: "Inter Tight";
 }
 
 /* ======================================== */
