@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 115" width="115" height="115">
+  <!-- generated with chatgpt -->
+  <path
+    d="M 53,96
+       C 43,97 29,97 21,93
+       C 12,89 9,82 10,74
+       C 11,65 18,57 29,52
+       C 23,47 19,41 19,34
+       C 19,25 22,15 28,9
+       C 32,5 37,6 41,11
+       C 46,17 48,27 50,38
+       C 51,43 52,45 53,45
+       C 55,43 56,38 57,34
+       C 59,24 62,14 68,10
+       C 72,7 77,9 80,14
+       C 84,21 84,31 82,38
+       C 81,44 78,49 74,52"
+    fill="none"
+    stroke="#7de6e1"
+    stroke-width="9"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+  <path
+    d="M 79,72
+       C 75,67 70,65 66,68
+       C 61,71 60,76 62,81
+       C 65,88 72,94 80,101
+       C 87,96 94,91 97,85
+       C 101,78 99,72 95,69
+       C 91,66 85,67 81,71
+       C 80,72 80,73 79,72 Z"
+    fill="none"
+    stroke="#fd9d9c"
+    stroke-width="9"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+</svg>
