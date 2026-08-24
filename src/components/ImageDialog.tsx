@@ -87,7 +87,7 @@ export function ImageDialog(props: ImageDialogProps) {
                   crop={crop}
                   zoom={zoom}
                   objectFit="cover"
-                  aspect={500 / 470}
+                  aspect={500 / 460}
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onCropComplete={(_croppedArea, croppedAreaPixels) => {

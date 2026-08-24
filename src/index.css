@@ -70,7 +70,7 @@ html {
   position: relative;
   max-height: 60dvh;
   margin: 0 auto;
-  aspect-ratio: 500 / 470;
+  aspect-ratio: 500 / 460;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
 }
 
