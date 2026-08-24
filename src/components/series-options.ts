@@ -16,7 +16,7 @@ export const seriesOptions = {
     borderColor: "#3A7AD2",
     profile: oguriCap,
     insert: oguriCapInsert,
-    insertTargetWidth: 290,
+    insertTargetWidth: 270,
     insertAlign: "right",
   },
   starblossom: {
@@ -27,7 +27,7 @@ export const seriesOptions = {
     borderColor: "#f0638a",
     profile: sakuraLaurel,
     insert: sakuraLaurelInsert,
-    insertTargetWidth: 245,
+    insertTargetWidth: 225,
     insertAlign: "left",
   },
   prettyderby: {
@@ -38,7 +38,7 @@ export const seriesOptions = {
     borderColor: "#EE6DCB",
     profile: specialWeek,
     insert: "https://gametora.com/images/umamusume/characters/chara_stand_1001_100101.png",
-    insertTargetWidth: 290,
+    insertTargetWidth: 270,
     insertAlign: "right",
   },
 } as const;
