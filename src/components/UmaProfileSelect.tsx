@@ -17,7 +17,12 @@ export function UmaProfileSelect({
   const { contains } = Combobox.useFilter();
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}char-list.json`)
+    let base = String(import.meta.env.VITE_BASE ?? "");
+    if (base.endsWith("/")) {
+      base = base.slice(0, -1);
+    }
+
+    fetch(`${base}/char-list.json`)
       .then((res) => res.json())
       .then((res: Uma[]) => {
         setUmaOptions(res);
