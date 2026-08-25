@@ -145,14 +145,15 @@ export function UmaCard({
       // profile pic
       const profilePicX = 20;
       const profilePicY = 69;
-      const profilePicSize = 60;
+      const profilePicFrameSize = 60;
+      const profilePicRenderSize = 80;
 
       const beginProfilePicArc = () => {
         ctx.beginPath();
         ctx.arc(
-          profilePicX + profilePicSize / 2,
-          profilePicY + profilePicSize / 2,
-          profilePicSize / 2,
+          profilePicX + profilePicFrameSize / 2,
+          profilePicY + profilePicFrameSize / 2,
+          profilePicFrameSize / 2,
           0,
           Math.PI * 2,
         );
@@ -165,7 +166,13 @@ export function UmaCard({
 
       beginProfilePicArc();
       ctx.clip();
-      ctx.drawImage(profileImg2, profilePicX, profilePicY, profilePicSize, profilePicSize);
+      ctx.drawImage(
+        profileImg2,
+        profilePicX + profilePicFrameSize / 2 - profilePicRenderSize / 2,
+        profilePicY + profilePicFrameSize / 2 - profilePicRenderSize / 2,
+        profilePicRenderSize,
+        profilePicRenderSize,
+      );
 
       // profile pic border
       beginProfilePicArc();
@@ -178,7 +185,7 @@ export function UmaCard({
       ctx.font = `700 20px ${sansSerifFont}`;
       ctx.fillStyle = "#000";
       const { height: profileNameHeight } = ctxMeasure(ctx, "");
-      ctx.fillText(username, 94, profilePicY + profilePicSize / 2 - profileNameHeight / 2);
+      ctx.fillText(username, 94, profilePicY + profilePicFrameSize / 2 - profileNameHeight / 2);
 
       // image box container
       const imageBoxX = 20;
