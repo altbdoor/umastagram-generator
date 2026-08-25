@@ -4,13 +4,13 @@ import { ImageDialog } from "./components/ImageDialog";
 import { UmaCard, type UmaCardProps } from "./components/UmaCard";
 import { UmaProfileSelect } from "./components/UmaProfileSelect";
 import { seriesOptions } from "./components/series-options";
-import type { Uma } from "./types";
+import type { FlatUma } from "./types";
 
 const currentYear = new Date().getFullYear();
 
 function App() {
   const [series, setSeries] = useState<UmaCardProps["series"]>("cinderellagray");
-  const [profile, setProfile] = useState<Uma | null>(null);
+  const [profile, setProfile] = useState<FlatUma | null>(null);
   const [likeCount, setLikeCount] = useState<string>("8192");
   const [tagLine1, setTagLine1] = useState<UmaCardProps["tagLine1"]>(
     `#umamusume #prettyderby #${currentYear}`,
@@ -77,8 +77,10 @@ function App() {
       <UmaCard
         series={series}
         username={profile?.name_en.replace(/\s+/g, "_") || ""}
-        profileImg={profile?.sns_icon ?? ""}
+        profileImg={profile?.image ?? ""}
         profileBorderColor={profile?.color_main ?? ""}
+        profileZoomOffsetY={profile?.image.includes("_thumb.png") ? 8 : 0}
+        profileZoomAmount={profile?.image.includes("_thumb.png") ? 32 : 10}
         likeCount={parseInt(likeCount, 10)}
         tagLine1={tagLine1}
         tagLine2={tagLine2}
@@ -131,7 +133,7 @@ function App() {
 
       <div className="container__footer">
         <Link href="https://github.com/altbdoor/umastagram-generator">GitHub</Link>
-        <Link href="https://umapyoi.net/">Data from umapyoi.net</Link>
+        <Link href="https://umapyoi.net/">umapyoi.net</Link>
         <Link href="https://kumo-ui.com/">Kumo UI</Link>
         <Link href="https://github.com/ValentinH/react-easy-crop">react-easy-crop</Link>
         <Link href="https://fontawesome.com/v6/icons/">FontAwesome</Link>

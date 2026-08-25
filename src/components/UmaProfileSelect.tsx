@@ -1,10 +1,10 @@
 import { Button, Combobox, Link, Text } from "@cloudflare/kumo";
 import { useCallback, useEffect, useState } from "react";
-import type { Uma } from "../types";
+import type { FlatUma, Uma } from "../types";
 
 interface UmaProfileSelectProps {
-  value: Uma | null;
-  onValueChange: (value: Uma | null) => void;
+  value: FlatUma | null;
+  onValueChange: (value: FlatUma | null) => void;
   defaultUmaName?: string;
 }
 
@@ -21,7 +21,7 @@ export function UmaProfileSelect({
   defaultUmaName,
   ...props
 }: UmaProfileSelectProps) {
-  const [umaOptions, setUmaOptions] = useState<Uma[]>([]);
+  const [umaOptions, setUmaOptions] = useState<FlatUma[]>([]);
   const { contains } = Combobox.useFilter();
 
   useEffect(() => {
@@ -33,10 +33,16 @@ export function UmaProfileSelect({
     fetch(`${base}/char-list.json`)
       .then((res) => res.json())
       .then((res: Uma[]) => {
-        setUmaOptions(res);
+        const flatRes = res.reduce((acc, val) => {
+          const { images, ...data } = val;
+          const flatImages = images.map((image) => ({ ...data, image }));
+          return [...acc, ...flatImages];
+        }, [] as FlatUma[]);
+
+        setUmaOptions(flatRes);
 
         if (defaultUmaName) {
-          const activeUma = res.find((uma) => uma.name_en === defaultUmaName);
+          const activeUma = flatRes.find((uma) => uma.name_en === defaultUmaName);
           if (activeUma) {
             onValueChange(activeUma);
           }
@@ -45,7 +51,7 @@ export function UmaProfileSelect({
   }, [onValueChange, defaultUmaName]);
 
   const umaFilter = useCallback(
-    (item: Uma, query: string) => {
+    (item: FlatUma, query: string) => {
       return contains(item.name_en, query);
     },
     [contains],
@@ -64,7 +70,7 @@ export function UmaProfileSelect({
           {props.value && (
             <div className="container__options__profile-img-box container__options__profile-img-box--vertical">
               <img
-                src={props.value?.sns_icon}
+                src={props.value?.image}
                 alt={props.value?.name_en}
                 width={64}
                 height={64}
@@ -84,11 +90,11 @@ export function UmaProfileSelect({
         <Combobox.Empty />
 
         <Combobox.List>
-          {(item: Uma) => (
-            <Combobox.Item key={item.id} value={item}>
+          {(item: FlatUma) => (
+            <Combobox.Item key={item.id + item.image} value={item}>
               <div className="container__options__profile-img-box container__options__profile-img-box--horizontal">
                 <img
-                  src={item.sns_icon}
+                  src={item.image}
                   alt={item.name_en}
                   loading="lazy"
                   width={48}

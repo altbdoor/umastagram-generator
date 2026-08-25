@@ -46,6 +46,8 @@ export interface UmaCardProps {
   username: string;
   profileImg: string;
   profileBorderColor: string;
+  profileZoomOffsetY: number;
+  profileZoomAmount: number;
   likeCount: number;
   tagLine1: string;
   tagLine2: string;
@@ -57,6 +59,8 @@ export function UmaCard({
   username,
   profileImg,
   profileBorderColor,
+  profileZoomOffsetY,
+  profileZoomAmount,
   tagLine1,
   tagLine2,
   likeCount,
@@ -83,7 +87,7 @@ export function UmaCard({
       // all images should be preloaded to not disrupt canvas drawing
       const [
         seriesImg,
-        profileImg2,
+        profileImgElem,
         insertImg,
         iconBunny,
         iconComment,
@@ -147,7 +151,7 @@ export function UmaCard({
       const profilePicX = 20;
       const profilePicY = 69;
       const profilePicFrameSize = 60;
-      const profilePicRenderSize = 70;
+      const profilePicRenderSize = profilePicFrameSize + profileZoomAmount;
 
       const beginProfilePicArc = () => {
         ctx.beginPath();
@@ -165,12 +169,15 @@ export function UmaCard({
       ctx.fillStyle = "#fff";
       ctx.fill();
 
+      const profileOffsetY =
+        profilePicFrameSize / 2 - profilePicRenderSize / 2 + profileZoomOffsetY;
+
       beginProfilePicArc();
       ctx.clip();
       ctx.drawImage(
-        profileImg2,
+        profileImgElem,
         profilePicX + profilePicFrameSize / 2 - profilePicRenderSize / 2,
-        profilePicY + profilePicFrameSize / 2 - profilePicRenderSize / 2,
+        profilePicY + profileOffsetY,
         profilePicRenderSize,
         profilePicRenderSize,
       );
@@ -292,7 +299,18 @@ export function UmaCard({
     return () => {
       cancelled = true;
     };
-  }, [series, username, profileImg, profileBorderColor, tagLine1, tagLine2, likeCount, bgImageUrl]);
+  }, [
+    series,
+    username,
+    profileImg,
+    profileBorderColor,
+    profileZoomOffsetY,
+    profileZoomAmount,
+    tagLine1,
+    tagLine2,
+    likeCount,
+    bgImageUrl,
+  ]);
 
   return (
     <div className="uma-card">

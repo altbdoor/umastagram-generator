@@ -24,4 +24,3 @@ dist-ssr
 *.sw?
 
 # generated files
-public/char-list.json
