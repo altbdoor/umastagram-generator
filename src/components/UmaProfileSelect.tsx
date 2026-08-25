@@ -1,4 +1,4 @@
-import { Button, Combobox } from "@cloudflare/kumo";
+import { Button, Combobox, Link, Text } from "@cloudflare/kumo";
 import { useCallback, useEffect, useState } from "react";
 import type { Uma } from "../types";
 
@@ -6,6 +6,14 @@ interface UmaProfileSelectProps {
   value: Uma | null;
   onValueChange: (value: Uma | null) => void;
   defaultUmaName?: string;
+}
+
+function UmaProfileLabel() {
+  return (
+    <Text>
+      Character profile (<Link href="https://umapyoi.net/">Data from umapyoi.net</Link>)
+    </Text>
+  );
 }
 
 export function UmaProfileSelect({
@@ -45,7 +53,7 @@ export function UmaProfileSelect({
 
   return (
     <Combobox
-      label="Umamusume profile"
+      label={<UmaProfileLabel />}
       value={props.value}
       onValueChange={onValueChange}
       items={umaOptions}
