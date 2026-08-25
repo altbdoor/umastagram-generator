@@ -1,3 +1,5 @@
+@import "react-easy-crop/react-easy-crop.css";
+
 @import "@fontsource/inter-tight/400.css";
 @import "@fontsource/inter-tight/700.css";
 
@@ -42,6 +44,23 @@ html {
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.container__options__profile-img-box {
+  display: flex;
+  gap: 0.5rem;
+}
+.container__options__profile-img-box--vertical {
+  padding: 0.25rem 0;
+  align-items: center;
+}
+.container__options__profile-img-box--horizontal {
+  align-items: center;
+}
+
+.container__options__profile-img-box > img {
+  border: 2px solid currentColor;
+  border-radius: 50%;
 }
 
 .container__footer {

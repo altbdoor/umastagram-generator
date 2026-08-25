@@ -2,13 +2,16 @@ import { Button, Input, Link, Radio } from "@cloudflare/kumo";
 import { useEffect, useRef, useState } from "react";
 import { ImageDialog } from "./components/ImageDialog";
 import { UmaCard, type UmaCardProps } from "./components/UmaCard";
+import { UmaProfileSelect } from "./components/UmaProfileSelect";
 import { seriesOptions } from "./components/series-options";
+import type { Uma } from "./types";
 
 const currentYear = new Date().getFullYear();
 
 function App() {
   const [series, setSeries] = useState<UmaCardProps["series"]>("cinderellagray");
-  const [likeCount, setLikeCount] = useState<UmaCardProps["likeCount"]>(8_192);
+  const [profile, setProfile] = useState<Uma | null>(null);
+  const [likeCount, setLikeCount] = useState<string>("8192");
   const [tagLine1, setTagLine1] = useState<UmaCardProps["tagLine1"]>(
     `#umamusume #prettyderby #${currentYear}`,
   );
@@ -73,7 +76,10 @@ function App() {
     <div className="container">
       <UmaCard
         series={series}
-        likeCount={likeCount}
+        username={profile?.name_en.replace(/\s+/g, "_") || ""}
+        profileImg={profile?.sns_icon ?? ""}
+        profileBorderColor={profile?.color_main ?? ""}
+        likeCount={parseInt(likeCount, 10)}
         tagLine1={tagLine1}
         tagLine2={tagLine2}
         bgImageUrl={bgImage}
@@ -93,18 +99,20 @@ function App() {
         <Radio.Group
           legend="Series"
           value={series}
-          onValueChange={(val) => setSeries(val ?? "cinderellagray")}
+          onValueChange={(val) => setSeries(val ?? "none")}
         >
           {Object.entries(seriesOptions).map(([value, opt]) => (
             <Radio.Item key={value} value={value} label={opt.label} />
           ))}
         </Radio.Group>
 
+        <UmaProfileSelect value={profile} onValueChange={setProfile} defaultUmaName="Oguri Cap" />
+
         <Input
           label="Like count"
-          placeholder="8,192"
-          value={String(likeCount)}
-          onValueChange={(val) => setLikeCount(val ? parseInt(val, 10) : 0)}
+          placeholder="8192"
+          value={likeCount}
+          onValueChange={(val) => setLikeCount(val ?? "")}
         />
 
         <Input
@@ -123,6 +131,7 @@ function App() {
 
       <div className="container__footer">
         <Link href="https://github.com/altbdoor/umastagram-generator">GitHub</Link>
+        <Link href="https://umapyoi.net/">Data from umapyoi.net</Link>
         <Link href="https://kumo-ui.com/">Kumo UI</Link>
         <Link href="https://github.com/ValentinH/react-easy-crop">react-easy-crop</Link>
         <Link href="https://fontawesome.com/v6/icons/">FontAwesome</Link>

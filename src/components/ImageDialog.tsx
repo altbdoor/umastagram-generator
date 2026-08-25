@@ -93,6 +93,7 @@ export function ImageDialog(props: ImageDialogProps) {
                   onCropComplete={(_croppedArea, croppedAreaPixels) => {
                     area.current = croppedAreaPixels;
                   }}
+                  disableAutomaticStylesInjection
                 />
               )}
             </div>

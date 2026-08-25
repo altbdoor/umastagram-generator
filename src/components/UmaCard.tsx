@@ -3,6 +3,7 @@ import iconBunnySvg from "../assets/img/bunny-heart.svg";
 import iconCommentSvg from "../assets/img/comment-dots.svg";
 import cygamesSvg from "../assets/img/cygames.svg";
 import iconEnvelopeSvg from "../assets/img/envelope.svg";
+import blankPng from "../assets/img/blank.png";
 import { seriesOptions } from "./series-options";
 
 const intFormatter = new Intl.NumberFormat("en-US");
@@ -20,7 +21,7 @@ const loadImage = async (path: string) => {
     img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = reject;
-    img.src = path;
+    img.src = path || blankPng;
   });
 };
 
@@ -42,13 +43,25 @@ const ctxMeasure = (ctx: CanvasRenderingContext2D, text: string) => {
 
 export interface UmaCardProps {
   series: keyof typeof seriesOptions;
+  username: string;
+  profileImg: string;
+  profileBorderColor: string;
   likeCount: number;
   tagLine1: string;
   tagLine2: string;
   bgImageUrl: string;
 }
 
-export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: UmaCardProps) {
+export function UmaCard({
+  series,
+  username,
+  profileImg,
+  profileBorderColor,
+  tagLine1,
+  tagLine2,
+  likeCount,
+  bgImageUrl,
+}: UmaCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -69,7 +82,7 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
       // all images should be preloaded to not disrupt canvas drawing
       const [
         seriesImg,
-        profileImg,
+        profileImg2,
         insertImg,
         iconBunny,
         iconComment,
@@ -78,7 +91,7 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
         bgImg,
       ] = await Promise.all([
         loadImage(currentSeries.image),
-        loadImage(currentSeries.profile),
+        loadImage(profileImg),
         loadImage(currentSeries.insert),
         loadImage(iconBunnySvg),
         loadImage(iconCommentSvg),
@@ -152,12 +165,12 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
 
       beginProfilePicArc();
       ctx.clip();
-      ctx.drawImage(profileImg, profilePicX, profilePicY, profilePicSize, profilePicSize);
+      ctx.drawImage(profileImg2, profilePicX, profilePicY, profilePicSize, profilePicSize);
 
       // profile pic border
       beginProfilePicArc();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = currentSeries.borderColor;
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = profileBorderColor;
       ctx.stroke();
       ctx.restore();
 
@@ -165,11 +178,7 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
       ctx.font = `700 20px ${sansSerifFont}`;
       ctx.fillStyle = "#000";
       const { height: profileNameHeight } = ctxMeasure(ctx, "");
-      ctx.fillText(
-        currentSeries.username,
-        94,
-        profilePicY + profilePicSize / 2 - profileNameHeight / 2,
-      );
+      ctx.fillText(username, 94, profilePicY + profilePicSize / 2 - profileNameHeight / 2);
 
       // image box container
       const imageBoxX = 20;
@@ -228,7 +237,7 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
       ctx.fillStyle = "#fd9d9c";
       const { height: likeCountHeight } = ctxMeasure(ctx, "");
       ctx.fillText(
-        `${intFormatter.format(likeCount)} likes!`,
+        `${isNaN(likeCount) ? "0" : intFormatter.format(likeCount)} likes!`,
         78,
         iconY + 54 / 2 - likeCountHeight / 2,
       );
@@ -236,24 +245,21 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
       // username text again
       ctx.font = `400 16px ${sansSerifFont}`;
       ctx.fillStyle = "#000";
-      ctx.fillText(currentSeries.username, 20, 660);
+      ctx.fillText(username, 20, 660);
 
       // tags part
       const tagY1 = 660;
 
       ctx.font = `400 16px ${sansSerifFont}`;
       ctx.fillStyle = "#3257B5";
-      const { width: usernameWidth, height: usernameHeight } = ctxMeasure(
-        ctx,
-        currentSeries.username + " ",
-      );
+      const { width: usernameWidth, height: usernameHeight } = ctxMeasure(ctx, username + " ");
 
       ctx.fillText(tagLine1, 20 + usernameWidth, tagY1);
       const tagY2 = tagY1 + usernameHeight + 4;
       ctx.fillText(tagLine2, 20, tagY2);
 
       // cygames logo
-      const cygamesHeight = usernameHeight;
+      const cygamesHeight = usernameHeight - 2;
       const cygamesWidth = computeImgWidth(cygames, cygamesHeight);
 
       ctx.font = `700 16px ${sansSerifFont}`;
@@ -269,7 +275,7 @@ export function UmaCard({ series, tagLine1, tagLine2, likeCount, bgImageUrl }: U
     return () => {
       cancelled = true;
     };
-  }, [series, tagLine1, tagLine2, likeCount, bgImageUrl]);
+  }, [series, username, profileImg, profileBorderColor, tagLine1, tagLine2, likeCount, bgImageUrl]);
 
   return (
     <div className="uma-card">
