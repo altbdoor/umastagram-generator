@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import iconBunnySvg from "../assets/img/bunny-heart.svg";
 import iconCommentSvg from "../assets/img/comment-dots.svg";
 import cygamesSvg from "../assets/img/cygames.svg";
@@ -63,6 +63,7 @@ export function UmaCard({
   bgImageUrl,
 }: UmaCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,7 +147,7 @@ export function UmaCard({
       const profilePicX = 20;
       const profilePicY = 69;
       const profilePicFrameSize = 60;
-      const profilePicRenderSize = 80;
+      const profilePicRenderSize = 70;
 
       const beginProfilePicArc = () => {
         ctx.beginPath();
@@ -277,7 +278,16 @@ export function UmaCard({
       ctx.drawImage(cygames, width - 20 - cygamesWidth, tagY2, cygamesWidth, cygamesHeight);
     }
 
-    renderCanvas();
+    async function runRenderCanvas() {
+      try {
+        setIsLoading(true);
+        await renderCanvas();
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    runRenderCanvas();
 
     return () => {
       cancelled = true;
@@ -286,7 +296,10 @@ export function UmaCard({
 
   return (
     <div className="uma-card">
-      <canvas ref={canvasRef} className="uma-card__canvas" width={540}></canvas>
+      <canvas ref={canvasRef} width={540} height={720}></canvas>
+      <div className={`uma-card__loading ${isLoading ? "uma-card__loading--active" : ""}`}>
+        <div className="uma-card__loading__spinner"></div>
+      </div>
     </div>
   );
 }
