@@ -1,5 +1,6 @@
-import { Button, Combobox, Link, Text } from "@cloudflare/kumo";
-import { useCallback, useEffect, useState } from "react";
+import { Button, Dialog, Input, Label, Link, Text } from "@cloudflare/kumo";
+import { useEffect, useState } from "react";
+import machanPlush from "../assets/img/machan-plush.png";
 import type { FlatUma, Uma } from "../types";
 
 interface UmaProfileSelectProps {
@@ -8,11 +9,19 @@ interface UmaProfileSelectProps {
   defaultUmaName?: string;
 }
 
-function UmaProfileLabel() {
+function UmaProfileOption(props: { image: string; label: string; color: string }) {
   return (
-    <Text>
-      Character profile (<Link href="https://umapyoi.net/">Data from umapyoi.net</Link>)
-    </Text>
+    <>
+      <img
+        src={props.image}
+        alt={props.label}
+        loading="lazy"
+        width={64}
+        height={64}
+        style={{ color: props.color }}
+      />
+      <span>{props.label}</span>
+    </>
   );
 }
 
@@ -21,8 +30,9 @@ export function UmaProfileSelect({
   defaultUmaName,
   ...props
 }: UmaProfileSelectProps) {
+  const [umaQuery, setUmaQuery] = useState("");
   const [umaOptions, setUmaOptions] = useState<FlatUma[]>([]);
-  const { contains } = Combobox.useFilter();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     let base = String(import.meta.env.VITE_BASE ?? "");
@@ -50,63 +60,104 @@ export function UmaProfileSelect({
       });
   }, [onValueChange, defaultUmaName]);
 
-  const umaFilter = useCallback(
-    (item: FlatUma, query: string) => {
-      return contains(item.name_en, query);
-    },
-    [contains],
-  );
+  let filteredUmaOptions: FlatUma[] = [];
+  if (isDialogOpen) {
+    filteredUmaOptions = umaOptions.filter((item) =>
+      item.name_en.toLowerCase().includes(umaQuery.toLowerCase()),
+    );
+  }
+
+  const onDialogOpenChange = (isOpen: boolean) => {
+    setIsDialogOpen(isOpen);
+
+    if (!isOpen) {
+      setUmaQuery("");
+    }
+  };
+
+  const onChoiceClick = (uma: FlatUma) => {
+    onValueChange(uma);
+    onDialogOpenChange(false);
+  };
 
   return (
-    <Combobox
-      label={<UmaProfileLabel />}
-      value={props.value}
-      onValueChange={onValueChange}
-      items={umaOptions}
-      filter={umaFilter}
-    >
-      <Combobox.Trigger render={<Button variant="outline" style={{ height: "auto" }} />}>
-        <Combobox.Value>
-          {props.value && (
-            <div className="container__options__profile-img-box container__options__profile-img-box--vertical">
-              <img
-                src={props.value?.image}
-                alt={props.value?.name_en}
-                width={64}
-                height={64}
-                style={{ color: props.value?.color_main }}
-              />
-              <span>{props.value?.name_en ?? ""}</span>
-            </div>
-          )}
+    <div className="uma-select">
+      <Label>
+        Character profile (<Link href="https://umapyoi.net/">Data from umapyoi.net</Link>)
+      </Label>
 
-          {!props.value && "Please select"}
-        </Combobox.Value>
-      </Combobox.Trigger>
+      <Dialog.Root open={isDialogOpen} onOpenChange={onDialogOpenChange}>
+        <Dialog.Trigger
+          render={(p) => (
+            <Button
+              variant="secondary"
+              type="button"
+              size="lg"
+              className="uma-select__trigger"
+              {...p}
+            >
+              <div className="uma-select__choices-item">
+                {props.value && (
+                  <UmaProfileOption
+                    image={props.value.image}
+                    label={props.value.name_en}
+                    color={props.value.color_main}
+                  />
+                )}
 
-      <Combobox.Content>
-        <Combobox.Input placeholder="Search Umamusume" />
-
-        <Combobox.Empty />
-
-        <Combobox.List>
-          {(item: FlatUma) => (
-            <Combobox.Item key={item.id + item.image} value={item}>
-              <div className="container__options__profile-img-box container__options__profile-img-box--horizontal">
-                <img
-                  src={item.image}
-                  alt={item.name_en}
-                  loading="lazy"
-                  width={48}
-                  height={48}
-                  style={{ color: item.color_main }}
-                />
-                <span>{item.name_en}</span>
+                {!props.value && "Please select"}
               </div>
-            </Combobox.Item>
+            </Button>
           )}
-        </Combobox.List>
-      </Combobox.Content>
-    </Combobox>
+        />
+
+        <Dialog size="lg">
+          <div className="uma-select__choices">
+            <Input
+              placeholder="Type to search Umamusume profile"
+              value={umaQuery}
+              onValueChange={(val) => setUmaQuery(val ?? "")}
+              autoFocus
+            />
+
+            <Dialog.Description render={<div />}>
+              <ul>
+                {isDialogOpen &&
+                  filteredUmaOptions.map((item) => (
+                    <li
+                      key={item.id + item.image}
+                      className="uma-select__choices-item"
+                      onClick={() => onChoiceClick(item)}
+                    >
+                      <UmaProfileOption
+                        image={item.image}
+                        label={item.name_en}
+                        color={item.color_main}
+                      />
+                    </li>
+                  ))}
+
+                {isDialogOpen && filteredUmaOptions.length === 0 && (
+                  <li className="uma-select__choices-empty">
+                    <img src={machanPlush} width={128} height={128} alt="Machan" />
+                    <Text>No matches found. Try other search terms.</Text>
+                  </li>
+                )}
+              </ul>
+            </Dialog.Description>
+
+            <div>
+              <Dialog.Close
+                render={(p) => (
+                  <Button type="button" variant="secondary-destructive" {...p}>
+                    Cancel
+                  </Button>
+                )}
+              />
+            </div>
+          </div>
+        </Dialog>
+      </Dialog.Root>
+    </div>
   );
 }

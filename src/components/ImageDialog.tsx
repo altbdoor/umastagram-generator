@@ -106,7 +106,7 @@ export function ImageDialog(props: ImageDialogProps) {
           <div className="img-dialog__buttons">
             <Dialog.Close
               render={(p) => (
-                <Button variant="secondary-destructive" {...p}>
+                <Button type="button" variant="secondary-destructive" {...p}>
                   Cancel
                 </Button>
               )}
