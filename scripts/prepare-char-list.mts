@@ -39,6 +39,7 @@ for (const uma of umapyoiData) {
     name_jp,
     color_main,
     images,
+    link,
   });
   process.stdout.write(`found ${images.length} images\n`);
 
