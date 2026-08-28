@@ -38,7 +38,7 @@ function App() {
     [],
   );
 
-  const getCard = (action: "download" | "open" | "share") => {
+  const getCard = async (action: "download" | "open" | "share") => {
     const canvas = document.querySelector<HTMLCanvasElement>(".container canvas");
     if (!canvas) {
       alert("Unable to find canvas!");
@@ -55,42 +55,42 @@ function App() {
       }
     }
 
-    canvas!.toBlob(async (blob) => {
-      if (!blob) {
-        alert("Unable to create blob from canvas!");
-        return;
-      }
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
 
-      if (action === "download") {
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = "umastagram.png";
-        link.hidden = true;
+    if (!blob) {
+      alert("Unable to create blob from canvas!");
+      return;
+    }
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      } else if (action === "open") {
-        const blobUrl = URL.createObjectURL(blob);
-        win!.location.href = blobUrl;
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
-      } else {
-        const file = new File([blob], "umastagram.png", { type: "image/png" });
+    if (action === "download") {
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "umastagram.png";
+      link.hidden = true;
 
-        try {
-          await navigator.share({ files: [file] });
-        } catch (err) {
-          if ((err as Error)?.name === "AbortError") {
-            return;
-          }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } else if (action === "open") {
+      const blobUrl = URL.createObjectURL(blob);
+      win!.location.href = blobUrl;
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
+    } else {
+      const file = new File([blob], "umastagram.png", { type: "image/png" });
 
-          alert("Unable to share image!");
-          console.error(err);
+      try {
+        await navigator.share({ files: [file] });
+      } catch (err) {
+        if ((err as Error)?.name === "AbortError") {
+          return;
         }
+
+        alert("Unable to share image!");
+        console.error(err);
       }
-    }, "image/png");
+    }
   };
 
   return (
