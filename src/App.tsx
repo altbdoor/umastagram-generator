@@ -30,7 +30,7 @@ function App() {
     setBgImage(blobUrl);
   };
 
-  const getCard = (action: "download" | "open") => {
+  const getCard = (action: "download" | "open" | "share") => {
     const canvas = document.querySelector<HTMLCanvasElement>(".container canvas");
     if (!canvas) {
       alert("Unable to find canvas!");
@@ -47,15 +47,14 @@ function App() {
       }
     }
 
-    canvas!.toBlob((blob) => {
+    canvas!.toBlob(async (blob) => {
       if (!blob) {
         alert("Unable to create blob from canvas!");
         return;
       }
 
-      const blobUrl = URL.createObjectURL(blob);
-
       if (action === "download") {
+        const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = blobUrl;
         link.download = "umastagram.png";
@@ -65,9 +64,23 @@ function App() {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(blobUrl);
-      } else {
+      } else if (action === "open") {
+        const blobUrl = URL.createObjectURL(blob);
         win!.location.href = blobUrl;
         setTimeout(() => URL.revokeObjectURL(blobUrl), 10_000);
+      } else {
+        const file = new File([blob], "umastagram.png", { type: "image/png" });
+
+        try {
+          if (navigator.share) {
+            await navigator.share({ files: [file] });
+          } else {
+            alert("Unable to share image!");
+          }
+        } catch (err) {
+          alert("Unable to share image!");
+          console.error(err);
+        }
       }
     }, "image/png");
   };
@@ -90,6 +103,9 @@ function App() {
       <div className="container__options">
         <div className="container__options__image">
           <ImageDialog onFinalizeImage={updateBgImage} />
+          <Button type="button" size="lg" onClick={() => getCard("share")}>
+            Share
+          </Button>
           <Button type="button" size="lg" onClick={() => getCard("download")}>
             Download
           </Button>
