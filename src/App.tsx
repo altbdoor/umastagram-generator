@@ -1,5 +1,5 @@
 import { Button, Input, Link, Radio } from "@cloudflare/kumo";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ImageDialog } from "./components/ImageDialog";
 import { UmaCard, type UmaCardProps } from "./components/UmaCard";
 import { UmaProfileSelect } from "./components/UmaProfileSelect";
@@ -29,6 +29,14 @@ function App() {
     lastBgImage.current = blobUrl;
     setBgImage(blobUrl);
   };
+
+  const canShareFile = useMemo(
+    () =>
+      typeof navigator !== "undefined" &&
+      typeof navigator.share !== "undefined" &&
+      !!navigator.canShare?.({ files: [new File([], "test.png", { type: "image/png" })] }),
+    [],
+  );
 
   const getCard = (action: "download" | "open" | "share") => {
     const canvas = document.querySelector<HTMLCanvasElement>(".container canvas");
@@ -72,12 +80,12 @@ function App() {
         const file = new File([blob], "umastagram.png", { type: "image/png" });
 
         try {
-          if (navigator.share) {
-            await navigator.share({ files: [file] });
-          } else {
-            alert("Unable to share image!");
-          }
+          await navigator.share({ files: [file] });
         } catch (err) {
+          if ((err as Error)?.name === "AbortError") {
+            return;
+          }
+
           alert("Unable to share image!");
           console.error(err);
         }
@@ -103,9 +111,12 @@ function App() {
       <div className="container__options">
         <div className="container__options__image">
           <ImageDialog onFinalizeImage={updateBgImage} />
-          <Button type="button" size="lg" onClick={() => getCard("share")}>
-            Share
-          </Button>
+          {canShareFile && (
+            <Button type="button" size="lg" onClick={() => getCard("share")}>
+              Share
+            </Button>
+          )}
+
           <Button type="button" size="lg" onClick={() => getCard("download")}>
             Download
           </Button>
