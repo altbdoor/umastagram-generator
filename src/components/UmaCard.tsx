@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import blankPng from "../assets/img/blank.png";
 import iconBunnySvg from "../assets/img/bunny-heart.svg";
 import iconCommentSvg from "../assets/img/comment-dots.svg";
+import iconCopyrightSvg from "../assets/img/copyright.svg";
 import cygamesSvg from "../assets/img/cygames.svg";
 import iconEnvelopeSvg from "../assets/img/envelope.svg";
-import blankPng from "../assets/img/blank.png";
 import { seriesOptions } from "./series-options";
 
 const intFormatter = new Intl.NumberFormat("en-US");
@@ -92,6 +93,7 @@ export function UmaCard({
         iconBunny,
         iconComment,
         iconEnvelope,
+        iconCopyright,
         cygames,
         bgImg,
       ] = await Promise.all([
@@ -101,6 +103,7 @@ export function UmaCard({
         loadImage(iconBunnySvg),
         loadImage(iconCommentSvg),
         loadImage(iconEnvelopeSvg),
+        loadImage(iconCopyrightSvg),
         loadImage(cygamesSvg),
         bgImageUrl ? loadImage(bgImageUrl) : null,
       ]);
@@ -244,8 +247,8 @@ export function UmaCard({
       // icons
       const iconY = 605;
       ctx.drawImage(iconBunny, 23, iconY, 54, 54);
-      ctx.drawImage(iconComment, 440, iconY, 38, 38);
-      ctx.drawImage(iconEnvelope, 488, iconY, 36, 36);
+      ctx.drawImage(iconComment, 436, iconY, 38, 38);
+      ctx.drawImage(iconEnvelope, 484, iconY, 36, 36);
 
       // like count text
       ctx.font = `400 20px ${sansSerifFont}`;
@@ -274,14 +277,16 @@ export function UmaCard({
       ctx.fillText(tagLine2, 20, tagY2);
 
       // cygames logo
-      const cygamesHeight = usernameHeight - 2;
+      const cygamesHeight = usernameHeight;
       const cygamesWidth = computeImgWidth(cygames, cygamesHeight);
 
-      ctx.font = `700 16px ${sansSerifFont}`;
-      ctx.fillStyle = "#000";
-      const { width: copyRightWidth } = ctxMeasure(ctx, "© ");
-      ctx.fillText("©", width - 20 - copyRightWidth - cygamesWidth, tagY2);
-
+      ctx.drawImage(
+        iconCopyright,
+        width - 20 - cygamesWidth - cygamesHeight,
+        tagY2,
+        cygamesHeight - 4,
+        cygamesHeight - 4,
+      );
       ctx.drawImage(cygames, width - 20 - cygamesWidth, tagY2, cygamesWidth, cygamesHeight);
     }
 

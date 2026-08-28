@@ -113,40 +113,40 @@ export function UmaProfileSelect({
 
         <Dialog size="lg">
           <div className="uma-select__choices">
-            <Input
-              placeholder="Type to search Umamusume profile"
-              value={umaQuery}
-              onValueChange={(val) => setUmaQuery(val ?? "")}
-              autoFocus
-            />
+            <div className="uma-select__choices-top">
+              <Input
+                placeholder="Type to search Umamusume profile"
+                value={umaQuery}
+                onValueChange={(val) => setUmaQuery(val ?? "")}
+                autoFocus
+              />
+            </div>
 
-            <Dialog.Description render={<div />}>
-              <ul>
-                {isDialogOpen &&
-                  filteredUmaOptions.map((item) => (
-                    <li
-                      key={item.id + item.image}
-                      className="uma-select__choices-item"
-                      onClick={() => onChoiceClick(item)}
-                    >
-                      <UmaProfileOption
-                        image={item.image}
-                        label={item.name_en}
-                        color={item.color_main}
-                      />
-                    </li>
-                  ))}
-
-                {isDialogOpen && filteredUmaOptions.length === 0 && (
-                  <li className="uma-select__choices-empty">
-                    <img src={machanPlush} width={128} height={128} alt="Machan" />
-                    <Text>No matches found. Try other search terms.</Text>
+            <ul>
+              {isDialogOpen &&
+                filteredUmaOptions.map((item) => (
+                  <li
+                    key={item.id + item.image}
+                    className="uma-select__choices-item"
+                    onClick={() => onChoiceClick(item)}
+                  >
+                    <UmaProfileOption
+                      image={item.image}
+                      label={item.name_en}
+                      color={item.color_main}
+                    />
                   </li>
-                )}
-              </ul>
-            </Dialog.Description>
+                ))}
 
-            <div>
+              {isDialogOpen && filteredUmaOptions.length === 0 && (
+                <li className="uma-select__choices-empty">
+                  <img src={machanPlush} width={128} height={128} alt="Machan" />
+                  <Text>No matches found. Try other search terms.</Text>
+                </li>
+              )}
+            </ul>
+
+            <div className="uma-select__choices-bottom">
               <Dialog.Close
                 render={(p) => (
                   <Button type="button" variant="secondary-destructive" {...p}>
