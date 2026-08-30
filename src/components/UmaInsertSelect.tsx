@@ -3,11 +3,12 @@ import { Radio, Label, Button } from "@cloudflare/kumo";
 export function UmaInsertSelect() {
   return (
     <>
-      <div>
+      <div className="uma-align__image">
         <Label>Change insert image</Label>
+
         <div>
-          <Button>asd</Button>
-          <Button>asd</Button>
+          <Button>Oguri Cap</Button>
+          <Button>Sakura Laurel</Button>
         </div>
       </div>
 

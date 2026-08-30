@@ -45,7 +45,12 @@ export function UmaProfileSelect({
       .then((res: Uma[]) => {
         const flatRes = res.reduce((acc, val) => {
           const { images, ...data } = val;
-          const flatImages = images.map((image) => ({ ...data, image }));
+
+          const flatImages = images.map((image) => {
+            const cdnImage = `https://wsrv.nl/?url=${encodeURIComponent(image)}`;
+            return { ...data, image: cdnImage };
+          });
+
           return [...acc, ...flatImages];
         }, [] as FlatUma[]);
 
@@ -119,6 +124,7 @@ export function UmaProfileSelect({
                 value={umaQuery}
                 onValueChange={(val) => setUmaQuery(val ?? "")}
                 autoFocus
+                aria-label="Character profile"
               />
             </div>
 

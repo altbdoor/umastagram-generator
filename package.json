@@ -11,7 +11,7 @@
     "pretty": "oxfmt ."
   },
   "dependencies": {
-    "@cloudflare/kumo": "^2.9.2",
+    "@cloudflare/kumo": "^2.10.0",
     "@fontsource/inter-tight": "^5.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -22,8 +22,8 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
-    "oxfmt": "^0.62.0",
-    "oxlint": "^1.77.0",
+    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
     "typescript": "~6.0.3",
     "vite": "^8.2.1"
   }

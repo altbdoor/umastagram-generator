@@ -214,3 +214,16 @@ html {
   bottom: 0;
   border-top: 1px solid var(--color-kumo-line);
 }
+
+/* ======================================== */
+
+.uma-align__image {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing)*2);
+}
+
+.uma-align__image > div {
+  display: flex;
+  gap: 0.5rem;
+}

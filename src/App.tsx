@@ -79,6 +79,7 @@ function App() {
         </Radio.Group>
 
         <UmaProfileSelect value={profile} onValueChange={setProfile} defaultUmaName="Oguri Cap" />
+        {/* <UmaInsertSelect /> */}
 
         <Input
           label="Like count"
