@@ -7,6 +7,7 @@ import { UmaProfileSelect } from "./components/UmaProfileSelect";
 import { seriesOptions } from "./components/series-options";
 import type { FlatUma } from "./types";
 import { getCard } from "./util/get-card";
+import { UmaPreset, type UmaPresetOptions } from "./components/UmaPreset";
 
 const currentYear = new Date().getFullYear();
 
@@ -38,6 +39,16 @@ function App() {
     URL.revokeObjectURL(lastBgImage.current);
     lastBgImage.current = blobUrl;
     setBgImage(blobUrl);
+  };
+
+  const handlePreset = (val: UmaPresetOptions) => {
+    if (val === "oguri1") {
+      setSeriesIndex("0");
+      setInsertIndex(1);
+    } else if (val === "sakura1") {
+      setSeriesIndex("1");
+      setInsertIndex(2);
+    }
   };
 
   return (
@@ -72,6 +83,8 @@ function App() {
             Open
           </Button>
         </div>
+
+        <UmaPreset onPresetSelect={handlePreset} />
 
         <Radio.Group
           legend="Series"
