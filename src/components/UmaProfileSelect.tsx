@@ -6,7 +6,7 @@ import type { FlatUma, Uma } from "../types";
 interface UmaProfileSelectProps {
   value: FlatUma | null;
   onValueChange: (value: FlatUma | null) => void;
-  defaultUmaName?: string;
+  onReady?: (items: FlatUma[]) => void;
 }
 
 function UmaProfileOption(props: { image: string; label: string; color: string }) {
@@ -25,16 +25,16 @@ function UmaProfileOption(props: { image: string; label: string; color: string }
   );
 }
 
-export function UmaProfileSelect({
-  onValueChange,
-  defaultUmaName,
-  ...props
-}: UmaProfileSelectProps) {
+export function UmaProfileSelect({ onValueChange, onReady, ...props }: UmaProfileSelectProps) {
   const [umaQuery, setUmaQuery] = useState("");
   const [umaOptions, setUmaOptions] = useState<FlatUma[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
+    if (umaOptions.length > 0) {
+      return;
+    }
+
     let base = String(import.meta.env.VITE_BASE ?? "");
     if (base.endsWith("/")) {
       base = base.slice(0, -1);
@@ -56,14 +56,11 @@ export function UmaProfileSelect({
 
         setUmaOptions(flatRes);
 
-        if (defaultUmaName) {
-          const activeUma = flatRes.find((uma) => uma.name_en === defaultUmaName);
-          if (activeUma) {
-            onValueChange(activeUma);
-          }
+        if (onReady) {
+          onReady(flatRes);
         }
       });
-  }, [onValueChange, defaultUmaName]);
+  }, [umaOptions, onValueChange, onReady]);
 
   let filteredUmaOptions: FlatUma[] = [];
   if (isDialogOpen) {

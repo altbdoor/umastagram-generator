@@ -1,13 +1,13 @@
 import { Button, Input, Link, Radio } from "@cloudflare/kumo";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageDialog } from "./components/ImageDialog";
 import { UmaCard, type UmaCardProps } from "./components/UmaCard";
 import { UmaInsertSelect } from "./components/UmaInsertSelect";
+import { UmaPreset, type UmaPresetOptions } from "./components/UmaPreset";
 import { UmaProfileSelect } from "./components/UmaProfileSelect";
 import { seriesOptions } from "./components/series-options";
 import type { FlatUma } from "./types";
 import { getCard } from "./util/get-card";
-import { UmaPreset, type UmaPresetOptions } from "./components/UmaPreset";
 
 const currentYear = new Date().getFullYear();
 
@@ -17,8 +17,9 @@ const canShareFile =
   !!navigator.canShare?.({ files: [new File([], "test.png", { type: "image/png" })] });
 
 function App() {
-  const [seriesIndex, setSeriesIndex] = useState("0");
+  const [seriesIndex, setSeriesIndex] = useState("1");
 
+  const cachedProfileRef = useRef<FlatUma[]>([]);
   const [profile, setProfile] = useState<FlatUma | null>(null);
   const [likeCount, setLikeCount] = useState<string>("8192");
   const [tagLine1, setTagLine1] = useState<UmaCardProps["tagLine1"]>(
@@ -41,13 +42,24 @@ function App() {
     setBgImage(blobUrl);
   };
 
+  const onProfileSelectReady = useCallback((items: FlatUma[]) => {
+    const defaultOguri = items.find((uma) => uma.name_en === "Oguri Cap")!;
+    cachedProfileRef.current.push(defaultOguri);
+    setProfile(defaultOguri);
+    cachedProfileRef.current.push(items.find((uma) => uma.name_en === "Sakura Laurel")!);
+    // note: in dev mode, 2x useEffect will still call this function twice. but
+    // caching the profiles twice is not a negative anyways.
+  }, []);
+
   const handlePreset = (val: UmaPresetOptions) => {
     if (val === "oguri1") {
-      setSeriesIndex("0");
-      setInsertIndex(1);
-    } else if (val === "sakura1") {
       setSeriesIndex("1");
+      setInsertIndex(1);
+      setProfile(cachedProfileRef.current.at(0)!);
+    } else if (val === "sakura1") {
+      setSeriesIndex("2");
       setInsertIndex(2);
+      setProfile(cachedProfileRef.current.at(1)!);
     }
   };
 
@@ -96,7 +108,12 @@ function App() {
           ))}
         </Radio.Group>
 
-        <UmaProfileSelect value={profile} onValueChange={setProfile} defaultUmaName="Oguri Cap" />
+        <UmaProfileSelect
+          value={profile}
+          onValueChange={setProfile}
+          onReady={onProfileSelectReady}
+        />
+
         <UmaInsertSelect value={insertIndex} onValueChange={setInsertIndex} />
 
         <Input
@@ -123,6 +140,7 @@ function App() {
       <div className="container__footer">
         <Link href="https://github.com/altbdoor/umastagram-generator">GitHub</Link>
         <Link href="https://umapyoi.net/">umapyoi.net</Link>
+        <Link href="https://umamusu.wiki/">umamusu.wiki</Link>
         <Link href="https://kumo-ui.com/">Kumo UI</Link>
         <Link href="https://github.com/ValentinH/react-easy-crop">react-easy-crop</Link>
         <Link href="https://fontawesome.com/v6/icons/">FontAwesome</Link>
