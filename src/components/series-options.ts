@@ -5,37 +5,46 @@ import prettyDerby from "../assets/img/pretty-derby.png";
 import sakuraLaurelInsert from "../assets/img/sakura-laurel-insert.png";
 import starBlossom from "../assets/img/star-blossom.png";
 
-export const seriesOptions = {
-  cinderellagray: {
+export const insertOptions = [
+  {
+    image: blank,
+    label: "Empty",
+    width: 1,
+    align: "bottom-center",
+  },
+  {
+    image: oguriCapInsert,
+    label: "Oguri Cap",
+    width: 270,
+    align: "bottom-right",
+  },
+  {
+    image: sakuraLaurelInsert,
+    label: "Sakura Laurel",
+    width: 225,
+    align: "bottom-left",
+  },
+] as const;
+
+export const seriesOptions = [
+  {
     label: "Cinderella Gray",
     image: cinderellaGray,
-    targetWidth: 230,
-    insert: oguriCapInsert,
-    insertTargetWidth: 270,
-    insertAlign: "right",
+    width: 230,
   },
-  starblossom: {
+  {
     label: "Star Blossom",
     image: starBlossom,
-    targetWidth: 260,
-    insert: sakuraLaurelInsert,
-    insertTargetWidth: 225,
-    insertAlign: "left",
+    width: 260,
   },
-  prettyderby: {
+  {
     label: "Pretty Derby",
     image: prettyDerby,
-    targetWidth: 180,
-    insert: "https://gametora.com/images/umamusume/characters/chara_stand_1001_100101.png",
-    insertTargetWidth: 270,
-    insertAlign: "right",
+    width: 180,
   },
-  none: {
+  {
     label: "None",
     image: blank,
-    targetWidth: 0,
-    insert: blank,
-    insertTargetWidth: 0,
-    insertAlign: "right",
+    width: 0,
   },
-} as const;
+] as const;

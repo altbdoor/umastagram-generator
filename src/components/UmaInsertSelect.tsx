@@ -1,26 +1,67 @@
-import { Radio, Label, Button } from "@cloudflare/kumo";
+import { Button, Dialog, Label } from "@cloudflare/kumo";
+import { useState } from "react";
+import { insertOptions } from "./series-options";
 
-export function UmaInsertSelect() {
+interface UmaInsertSelectProps {
+  value: number;
+  onValueChange: (val: number) => void;
+}
+
+export function UmaInsertSelect(props: UmaInsertSelectProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const onSelectInsert = (idx: number) => {
+    props.onValueChange(idx);
+    setIsDialogOpen(false);
+  };
+
   return (
-    <>
-      <div className="uma-align__image">
-        <Label>Change insert image</Label>
+    <div className="uma-insert">
+      <Label>Insert image</Label>
 
-        <div>
-          <Button>Oguri Cap</Button>
-          <Button>Sakura Laurel</Button>
-        </div>
-      </div>
+      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog.Trigger
+          render={(p) => (
+            <Button variant="secondary" type="button" size="lg" {...p}>
+              Change insert image
+            </Button>
+          )}
+        />
 
-      <Radio.Group
-        legend="Align insert image"
-        orientation="horizontal"
-        // value={value}
-        // onValueChange={setValue}
-      >
-        <Radio.Item label="Left" value="left" />
-        <Radio.Item label="Right" value="right" />
-      </Radio.Group>
-    </>
+        <Dialog size="lg">
+          <div className="uma-insert__choices">
+            <Label>Insert image</Label>
+
+            <ul>
+              {insertOptions.map((opt, idx) => (
+                <li key={idx}>
+                  <Button
+                    variant="secondary"
+                    type="button"
+                    className={`uma-insert__choices-btn ${props.value === idx ? "uma-insert__choices-btn--active" : ""}`}
+                    onClick={() => onSelectInsert(idx)}
+                  >
+                    {opt.label === "Empty" && <span>{opt.label}</span>}
+                    {opt.label !== "Empty" && (
+                      <img src={opt.image} loading="lazy" alt={opt.label} />
+                    )}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="uma-insert__choices-bottom">
+              <Dialog.Close
+                render={(p) => (
+                  <Button type="button" variant="secondary-destructive" {...p}>
+                    Cancel
+                  </Button>
+                )}
+              />
+            </div>
+          </div>
+        </Dialog>
+      </Dialog.Root>
+    </div>
   );
 }

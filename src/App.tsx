@@ -2,6 +2,7 @@ import { Button, Input, Link, Radio } from "@cloudflare/kumo";
 import { useEffect, useRef, useState } from "react";
 import { ImageDialog } from "./components/ImageDialog";
 import { UmaCard, type UmaCardProps } from "./components/UmaCard";
+import { UmaInsertSelect } from "./components/UmaInsertSelect";
 import { UmaProfileSelect } from "./components/UmaProfileSelect";
 import { seriesOptions } from "./components/series-options";
 import type { FlatUma } from "./types";
@@ -15,7 +16,8 @@ const canShareFile =
   !!navigator.canShare?.({ files: [new File([], "test.png", { type: "image/png" })] });
 
 function App() {
-  const [series, setSeries] = useState<UmaCardProps["series"]>("cinderellagray");
+  const [seriesIndex, setSeriesIndex] = useState("0");
+
   const [profile, setProfile] = useState<FlatUma | null>(null);
   const [likeCount, setLikeCount] = useState<string>("8192");
   const [tagLine1, setTagLine1] = useState<UmaCardProps["tagLine1"]>(
@@ -25,6 +27,8 @@ function App() {
 
   const lastBgImage = useRef("");
   const [bgImage, setBgImage] = useState("");
+
+  const [insertIndex, setInsertIndex] = useState(1);
 
   useEffect(() => {
     return () => URL.revokeObjectURL(lastBgImage.current);
@@ -39,7 +43,7 @@ function App() {
   return (
     <div className="container">
       <UmaCard
-        series={series}
+        seriesIndex={parseInt(seriesIndex, 10)}
         username={profile?.name_en.replace(/\s+/g, "_") || ""}
         profileImg={profile?.image ?? ""}
         profileBorderColor={profile?.color_main ?? ""}
@@ -48,7 +52,8 @@ function App() {
         likeCount={parseInt(likeCount, 10)}
         tagLine1={tagLine1}
         tagLine2={tagLine2}
-        bgImageUrl={bgImage}
+        bgImgUrl={bgImage}
+        insertIndex={insertIndex}
       />
 
       <div className="container__options">
@@ -70,16 +75,16 @@ function App() {
 
         <Radio.Group
           legend="Series"
-          value={series}
-          onValueChange={(val) => setSeries(val ?? "none")}
+          value={seriesIndex}
+          onValueChange={(val) => setSeriesIndex(val ?? "0")}
         >
-          {Object.entries(seriesOptions).map(([value, opt]) => (
-            <Radio.Item key={value} value={value} label={opt.label} />
+          {seriesOptions.map((opt, idx) => (
+            <Radio.Item key={opt.label} value={String(idx)} label={opt.label} />
           ))}
         </Radio.Group>
 
         <UmaProfileSelect value={profile} onValueChange={setProfile} defaultUmaName="Oguri Cap" />
-        {/* <UmaInsertSelect /> */}
+        <UmaInsertSelect value={insertIndex} onValueChange={setInsertIndex} />
 
         <Input
           label="Like count"

@@ -5,7 +5,7 @@ import iconCommentSvg from "../assets/img/comment-dots.svg";
 import iconCopyrightSvg from "../assets/img/copyright.svg";
 import cygamesSvg from "../assets/img/cygames.svg";
 import iconEnvelopeSvg from "../assets/img/envelope.svg";
-import { seriesOptions } from "./series-options";
+import { insertOptions, seriesOptions } from "./series-options";
 
 const intFormatter = new Intl.NumberFormat("en-US");
 
@@ -43,7 +43,7 @@ const ctxMeasure = (ctx: CanvasRenderingContext2D, text: string) => {
 };
 
 export interface UmaCardProps {
-  series: keyof typeof seriesOptions;
+  seriesIndex: number;
   username: string;
   profileImg: string;
   profileBorderColor: string;
@@ -52,11 +52,12 @@ export interface UmaCardProps {
   likeCount: number;
   tagLine1: string;
   tagLine2: string;
-  bgImageUrl: string;
+  bgImgUrl: string;
+  insertIndex: number;
 }
 
 export function UmaCard({
-  series,
+  seriesIndex,
   username,
   profileImg,
   profileBorderColor,
@@ -65,7 +66,8 @@ export function UmaCard({
   tagLine1,
   tagLine2,
   likeCount,
-  bgImageUrl,
+  bgImgUrl,
+  insertIndex,
 }: UmaCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,7 +85,8 @@ export function UmaCard({
         document.fonts.load('400 20px "Inter Tight"'),
         document.fonts.load('700 20px "Inter Tight"'),
       ]);
-      const currentSeries = seriesOptions[series];
+      const currentSeries = seriesOptions.at(seriesIndex)!;
+      const currentInsert = insertOptions.at(insertIndex)!;
 
       // all images should be preloaded to not disrupt canvas drawing
       const [
@@ -99,13 +102,13 @@ export function UmaCard({
       ] = await Promise.all([
         loadImage(currentSeries.image),
         loadImage(profileImg),
-        loadImage(currentSeries.insert),
+        loadImage(currentInsert.image),
         loadImage(iconBunnySvg),
         loadImage(iconCommentSvg),
         loadImage(iconEnvelopeSvg),
         loadImage(iconCopyrightSvg),
         loadImage(cygamesSvg),
-        bgImageUrl ? loadImage(bgImageUrl) : null,
+        bgImgUrl ? loadImage(bgImgUrl) : null,
       ]);
 
       if (cancelled) {
@@ -144,10 +147,10 @@ export function UmaCard({
       // series logo
       ctx.drawImage(
         seriesImg,
-        width - currentSeries.targetWidth,
+        width - currentSeries.width,
         2,
-        currentSeries.targetWidth - 4,
-        computeImgHeight(seriesImg, currentSeries.targetWidth),
+        currentSeries.width - 4,
+        computeImgHeight(seriesImg, currentSeries.width),
       );
 
       // profile pic
@@ -199,46 +202,50 @@ export function UmaCard({
       ctx.fillText(username, 94, profilePicY + profilePicFrameSize / 2 - profileNameHeight / 2);
 
       // image box container
-      const imageBoxX = 20;
-      const imageBoxY = 137;
-      const imageBoxW = width - 40;
-      const imageBoxH = 460;
+      const imgBoxX = 20;
+      const imgBoxY = 137;
+      const imgBoxW = width - 40;
+      const imgBoxH = 460;
 
       ctx.save();
       ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
       ctx.shadowBlur = 10;
       ctx.fillStyle = "#fff";
-      ctx.fillRect(imageBoxX, imageBoxY, imageBoxW, imageBoxH);
+      ctx.fillRect(imgBoxX, imgBoxY, imgBoxW, imgBoxH);
       ctx.restore();
 
       // image box clip
       ctx.save();
       ctx.beginPath();
-      ctx.rect(imageBoxX, imageBoxY, imageBoxW, imageBoxH);
+      ctx.rect(imgBoxX, imgBoxY, imgBoxW, imgBoxH);
       ctx.clip();
 
       if (bgImg) {
-        const bgImgScale = Math.max(
-          imageBoxW / bgImg.naturalWidth,
-          imageBoxH / bgImg.naturalHeight,
-        );
+        const bgImgScale = Math.max(imgBoxW / bgImg.naturalWidth, imgBoxH / bgImg.naturalHeight);
 
-        const imageWidth = bgImg.naturalWidth * bgImgScale;
-        const imageHeight = bgImg.naturalHeight * bgImgScale;
+        const imgWidth = bgImg.naturalWidth * bgImgScale;
+        const imgHeight = bgImg.naturalHeight * bgImgScale;
 
-        const imageX = imageBoxX + (imageBoxW - imageWidth) / 2;
-        const imageY = imageBoxY + (imageBoxH - imageHeight) / 2;
+        const imgX = imgBoxX + (imgBoxW - imgWidth) / 2;
+        const imgY = imgBoxY + (imgBoxH - imgHeight) / 2;
 
-        ctx.drawImage(bgImg, imageX, imageY, imageWidth, imageHeight);
+        ctx.drawImage(bgImg, imgX, imgY, imgWidth, imgHeight);
       }
 
-      const insertImgHeight = computeImgHeight(insertImg, currentSeries.insertTargetWidth);
+      const insertImgWidth = currentInsert.width;
+      const insertImgHeight = computeImgHeight(insertImg, insertImgWidth);
+      let insertImgX = 20;
+      if (currentInsert.align === "bottom-center") {
+        insertImgX = (width - insertImgWidth) / 2;
+      } else if (currentInsert.align === "bottom-right") {
+        insertImgX = width - 20 - insertImgWidth;
+      }
 
       ctx.drawImage(
         insertImg,
-        currentSeries.insertAlign === "left" ? 20 : width - 20 - currentSeries.insertTargetWidth,
-        imageBoxY + imageBoxH - insertImgHeight,
-        currentSeries.insertTargetWidth,
+        insertImgX,
+        imgBoxY + imgBoxH - insertImgHeight,
+        insertImgWidth,
         insertImgHeight,
       );
 
@@ -305,7 +312,7 @@ export function UmaCard({
       cancelled = true;
     };
   }, [
-    series,
+    seriesIndex,
     username,
     profileImg,
     profileBorderColor,
@@ -314,7 +321,8 @@ export function UmaCard({
     tagLine1,
     tagLine2,
     likeCount,
-    bgImageUrl,
+    bgImgUrl,
+    insertIndex,
   ]);
 
   return (
