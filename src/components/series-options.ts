@@ -29,7 +29,7 @@ export const seriesOptions = [
   },
 ] as const;
 
-const withWsrv = (url: string) => {
+export const withWsrv = (url: string) => {
   return `https://wsrv.nl/?url=${encodeURIComponent(url)}`;
 };
 

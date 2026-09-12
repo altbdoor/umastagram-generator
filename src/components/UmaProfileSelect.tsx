@@ -2,6 +2,7 @@ import { Button, Dialog, Input, Label, Link, Text } from "@cloudflare/kumo";
 import { useEffect, useState } from "react";
 import machanPlush from "../assets/img/machan-plush.png";
 import type { FlatUma, Uma } from "../types";
+import { withWsrv } from "./series-options";
 
 interface UmaProfileSelectProps {
   value: FlatUma | null;
@@ -47,8 +48,7 @@ export function UmaProfileSelect({ onValueChange, onReady, ...props }: UmaProfil
           const { images, ...data } = val;
 
           const flatImages = images.map((image) => {
-            const cdnImage = `https://wsrv.nl/?url=${encodeURIComponent(image)}`;
-            return { ...data, image: cdnImage };
+            return { ...data, image: withWsrv(image) };
           });
 
           return [...acc, ...flatImages];
