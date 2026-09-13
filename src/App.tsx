@@ -16,12 +16,21 @@ const canShareFile =
   typeof navigator.share !== "undefined" &&
   !!navigator.canShare?.({ files: [new File([], "test.png", { type: "image/png" })] });
 
+const commonTags = [
+  "umamusume",
+  "ウマ娘",
+  "prettyderby",
+  "プリティーダービー",
+  String(currentYear),
+];
+
 function App() {
   const [seriesIndex, setSeriesIndex] = useState("1");
+  const [likesLang, setLikesLang] = useState("en");
 
   const cachedProfileRef = useRef<FlatUma[]>([]);
   const [profile, setProfile] = useState<FlatUma | null>(null);
-  const [likeCount, setLikeCount] = useState<string>("8192");
+  const [likeCount, setLikeCount] = useState<string>("122390");
   const [tagLine1, setTagLine1] = useState<UmaCardProps["tagLine1"]>(
     `#umamusume #prettyderby #${currentYear}`,
   );
@@ -77,6 +86,7 @@ function App() {
         tagLine2={tagLine2}
         bgImgUrl={bgImage}
         insertIndex={insertIndex}
+        likesLang={likesLang}
       />
 
       <div className="container__options">
@@ -118,17 +128,46 @@ function App() {
 
         <Input
           label="Like count"
-          placeholder="8192"
+          placeholder="122390"
           value={likeCount}
           onValueChange={(val) => setLikeCount(val ?? "")}
         />
 
-        <Input
-          label="Tag line 1"
-          placeholder="#umamusume #prettyderby"
-          value={tagLine1}
-          onValueChange={(val) => setTagLine1(val)}
-        />
+        <Radio.Group
+          legend="Likes language"
+          value={likesLang}
+          onValueChange={(val) => setLikesLang(val ?? "en")}
+          orientation="horizontal"
+        >
+          <Radio.Item value="en" label="English" />
+          <Radio.Item value="ja" label="Japanese" />
+        </Radio.Group>
+
+        <div>
+          <Input
+            label="Tag line 1"
+            placeholder="#umamusume #prettyderby"
+            value={tagLine1}
+            onValueChange={(val) => setTagLine1(val)}
+          />
+
+          <ol className="uma-tags">
+            {commonTags.map((tag) => (
+              <li key={tag}>
+                <Link
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTagLine1((prev) => `${prev} #${tag}`.trim());
+                  }}
+                >
+                  #{tag}
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <Input
           label="Tag line 2"
           placeholder="#umastagramgenerator"

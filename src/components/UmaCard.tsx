@@ -7,7 +7,22 @@ import cygamesSvg from "../assets/img/cygames.svg";
 import iconEnvelopeSvg from "../assets/img/envelope.svg";
 import { insertOptions, seriesOptions } from "./series-options";
 
-const intFormatter = new Intl.NumberFormat("en-US");
+const enFormatter = new Intl.NumberFormat("en-US");
+
+const formatLikeText = (likeCount: number, likesLang: string) => {
+  if (isNaN(likeCount)) {
+    return likesLang === "ja" ? "0 ウマいね！" : "0 likes!";
+  }
+  if (likesLang !== "ja") {
+    return `${enFormatter.format(likeCount)} likes!`;
+  }
+  if (likeCount < 10000) {
+    return `${likeCount} ウマいね！`;
+  }
+  const man = Math.floor(likeCount / 10000);
+  const rem = likeCount % 10000;
+  return rem === 0 ? `${man}万 ウマいね！` : `${man}万${rem} ウマいね！`;
+};
 
 const sansSerifFont = [
   `"Inter Tight", system-ui, -apple-system`,
@@ -54,6 +69,7 @@ export interface UmaCardProps {
   tagLine2: string;
   bgImgUrl: string;
   insertIndex: number;
+  likesLang: string;
 }
 
 export function UmaCard({
@@ -68,6 +84,7 @@ export function UmaCard({
   likeCount,
   bgImgUrl,
   insertIndex,
+  likesLang,
 }: UmaCardProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -261,11 +278,7 @@ export function UmaCard({
       ctx.font = `400 20px ${sansSerifFont}`;
       ctx.fillStyle = "#fd9d9c";
       const { height: likeCountHeight } = ctxMeasure(ctx, "");
-      ctx.fillText(
-        `${isNaN(likeCount) ? "0" : intFormatter.format(likeCount)} likes!`,
-        78,
-        iconY + 54 / 2 - likeCountHeight / 2,
-      );
+      ctx.fillText(formatLikeText(likeCount, likesLang), 78, iconY + 54 / 2 - likeCountHeight / 2);
 
       // username text again
       ctx.font = `400 16px ${sansSerifFont}`;
@@ -323,6 +336,7 @@ export function UmaCard({
     likeCount,
     bgImgUrl,
     insertIndex,
+    likesLang,
   ]);
 
   return (
