@@ -45,7 +45,7 @@ export function UmaInsertSelect(props: UmaInsertSelectProps) {
       <Dialog.Root open={isDialogOpen} onOpenChange={onDialogOpenChange}>
         <Dialog.Trigger
           render={(p) => (
-            <Button variant="secondary" type="button" size="lg" {...p}>
+            <Button variant="secondary" type="button" {...p}>
               Change insert image
             </Button>
           )}

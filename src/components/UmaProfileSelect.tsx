@@ -44,15 +44,13 @@ export function UmaProfileSelect({ onValueChange, onReady, ...props }: UmaProfil
     fetch(`${base}/char-list.json`)
       .then((res) => res.json())
       .then((res: Uma[]) => {
-        const flatRes = res.reduce((acc, val) => {
+        const flatRes = res.flatMap((val) => {
           const { images, ...data } = val;
 
-          const flatImages = images.map((image) => {
+          return images.map((image) => {
             return { ...data, image: withWsrv(image) };
           });
-
-          return [...acc, ...flatImages];
-        }, [] as FlatUma[]);
+        });
 
         setUmaOptions(flatRes);
 

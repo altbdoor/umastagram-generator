@@ -1,7 +1,9 @@
 @import "react-easy-crop/react-easy-crop.css";
 
-@import "@fontsource/inter-tight/400.css";
-@import "@fontsource/inter-tight/700.css";
+@import "@fontsource/inter-tight/latin-400.css";
+@import "@fontsource/inter-tight/latin-700.css";
+@import "@fontsource/inter-tight/latin-ext-400.css";
+@import "@fontsource/inter-tight/latin-ext-700.css";
 
 /* https://www.dafont.com/indigo-daisy.font */
 @font-face {
