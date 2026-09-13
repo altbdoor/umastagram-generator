@@ -140,7 +140,7 @@ function App() {
           orientation="horizontal"
         >
           <Radio.Item value="en" label="English" />
-          <Radio.Item value="ja" label="Japanese" />
+          <Radio.Item value="ja" label="日本語" />
         </Radio.Group>
 
         <div>
