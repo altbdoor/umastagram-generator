@@ -145,7 +145,8 @@ function App() {
           onValueChange={(val) => setLikesLang(val ?? "en")}
           orientation="horizontal"
         >
-          <Radio.Item value="en" label="English" />
+          <Radio.Item value="en" label="EN (Likes)" />
+          <Radio.Item value="en-UMA" label="EN (Umazing)" />
           <Radio.Item value="ja" label="日本語" />
         </Radio.Group>
 

@@ -10,18 +10,28 @@ import { insertOptions, seriesOptions } from "./series-options";
 const enFormatter = new Intl.NumberFormat("en-US");
 
 const formatLikeText = (likeCount: number, likesLang: string) => {
+  let suffix = "likes!";
+  if (likesLang === "en-UMA") {
+    suffix = "Umazing!";
+  } else if (likesLang === "ja") {
+    suffix = "ウマいね!";
+  }
+
   if (isNaN(likeCount)) {
-    return likesLang === "ja" ? "0 ウマいね！" : "0 likes!";
+    return `0 ${suffix}`;
   }
+
   if (likesLang !== "ja") {
-    return `${enFormatter.format(likeCount)} likes!`;
+    return `${enFormatter.format(likeCount)} ${suffix}`;
   }
+
   if (likeCount < 10000) {
-    return `${likeCount} ウマいね！`;
+    return `${likeCount} ${suffix}`;
   }
+
   const man = Math.floor(likeCount / 10000);
   const rem = likeCount % 10000;
-  return rem === 0 ? `${man}万 ウマいね！` : `${man}万${rem} ウマいね！`;
+  return rem === 0 ? `${man}万 ${suffix}` : `${man}万${rem} ${suffix}`;
 };
 
 const sansSerifFont = [
