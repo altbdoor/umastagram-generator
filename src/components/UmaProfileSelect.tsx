@@ -46,9 +46,13 @@ export function UmaProfileSelect({ onValueChange, onReady, ...props }: UmaProfil
       .then((res: Uma[]) => {
         const flatRes = res.flatMap((val) => {
           const { images, ...data } = val;
+          // strip nbsp and zero-width space from upstream names
+          const name_en = val.name_en.replace(/[\u00A0\u200B]/g, (m) =>
+            m === "\u00A0" ? " " : "",
+          );
 
           return images.map((image) => {
-            return { ...data, image: withWsrv(image) };
+            return { ...data, name_en, image: withWsrv(image) };
           });
         });
 

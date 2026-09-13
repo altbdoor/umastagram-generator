@@ -183,6 +183,7 @@ function App() {
         <Link href="https://kumo-ui.com/">Kumo UI</Link>
         <Link href="https://github.com/ValentinH/react-easy-crop">react-easy-crop</Link>
         <Link href="https://fontawesome.com/v6/icons/">FontAwesome</Link>
+        <Link href="https://www.dafont.com/indigo-daisy.font">Indigo Daisy</Link>
       </div>
     </div>
   );
