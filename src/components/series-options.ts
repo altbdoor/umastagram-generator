@@ -50,13 +50,11 @@ const getUmaWikiStamp = (id: string, label: string, hasGlobal: boolean) => {
   return [jpStamp, globalStamp];
 };
 
-const processedStampsList = stampsList.flatMap((item, idx) => {
-  if (!Array.isArray(item)) {
-    return [];
-  }
-
-  return getUmaWikiStamp(String(100001 + idx), String(item.at(0)), Boolean(item[1]));
-});
+const processedStampsList = stampsList
+  .filter((item) => Array.isArray(item))
+  .flatMap((item, idx) => {
+    return getUmaWikiStamp(String(100001 + idx), String(item.at(0)), Boolean(item[1]));
+  });
 
 export const insertOptions = [
   {
