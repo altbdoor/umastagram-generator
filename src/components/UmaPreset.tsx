@@ -3,6 +3,7 @@ import { Button, Label } from "@cloudflare/kumo";
 const options = [
   { label: "Oguri Cap x Cinderella Gray", value: "oguri1" },
   { label: "Sakura Laurel x Star Blossom", value: "sakura1" },
+  { label: "Curren Chan", value: "curren" },
 ] as const;
 
 export type UmaPresetOptions = (typeof options)[number]["value"];

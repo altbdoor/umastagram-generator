@@ -55,7 +55,9 @@ function App() {
     const defaultOguri = items.find((uma) => uma.name_en === "Oguri Cap")!;
     cachedProfileRef.current.push(defaultOguri);
     setProfile(defaultOguri);
+
     cachedProfileRef.current.push(items.find((uma) => uma.name_en === "Sakura Laurel")!);
+    cachedProfileRef.current.push(items.find((uma) => uma.name_en === "Curren Chan")!);
     // note: in dev mode, 2x useEffect will still call this function twice. but
     // caching the profiles twice is not a negative anyways.
   }, []);
@@ -69,6 +71,10 @@ function App() {
       setSeriesIndex("2");
       setInsertIndex(2);
       setProfile(cachedProfileRef.current.at(1)!);
+    } else if (val === "curren") {
+      setSeriesIndex("3");
+      setInsertIndex(78);
+      setProfile(cachedProfileRef.current.at(2)!);
     }
   };
 
