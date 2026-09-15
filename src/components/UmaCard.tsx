@@ -67,6 +67,28 @@ const ctxMeasure = (ctx: CanvasRenderingContext2D, text: string) => {
   };
 };
 
+const parseTextAsTags = (ctx: CanvasRenderingContext2D, val: string, initialX: number) => {
+  let sumX = initialX;
+
+  return (val ?? "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((item) => {
+      const itemIsHash = /^[#＃]/.test(item);
+      const textWidth = ctxMeasure(ctx, item + " ").width;
+
+      const returnObj = {
+        hash: itemIsHash,
+        text: item,
+        posX: sumX,
+        color: itemIsHash ? "#3257B5" : "#000",
+      };
+
+      sumX += textWidth;
+      return returnObj;
+    });
+};
+
 export interface UmaCardProps {
   seriesIndex: number;
   username: string;
@@ -110,6 +132,7 @@ export function UmaCard({
       await Promise.all([
         document.fonts.load('400 italic 45px "indigo_daisy"'),
         document.fonts.load('400 20px "Inter Tight"'),
+        document.fonts.load('500 20px "Inter Tight"'),
         document.fonts.load('700 20px "Inter Tight"'),
       ]);
       const currentSeries = seriesOptions.at(seriesIndex)!;
@@ -291,20 +314,28 @@ export function UmaCard({
       ctx.fillText(formatLikeText(likeCount, likesLang), 78, iconY + 54 / 2 - likeCountHeight / 2);
 
       // username text again
-      ctx.font = `400 16px ${sansSerifFont}`;
+      ctx.font = `500 16px ${sansSerifFont}`;
       ctx.fillStyle = "#000";
       ctx.fillText(username, 20, 660);
 
       // tags part
       const tagY1 = 660;
 
-      ctx.font = `400 16px ${sansSerifFont}`;
-      ctx.fillStyle = "#3257B5";
       const { width: usernameWidth, height: usernameHeight } = ctxMeasure(ctx, username + " ");
+      ctx.font = `400 16px ${sansSerifFont}`;
 
-      ctx.fillText(tagLine1, 20 + usernameWidth, tagY1);
+      const tagLine1Parts = parseTextAsTags(ctx, tagLine1, 20 + usernameWidth);
+      tagLine1Parts.forEach((part) => {
+        ctx.fillStyle = part.color;
+        ctx.fillText(part.text, part.posX, tagY1);
+      });
+
       const tagY2 = tagY1 + usernameHeight + 4;
-      ctx.fillText(tagLine2, 20, tagY2);
+      const tagLine2Parts = parseTextAsTags(ctx, tagLine2, 20);
+      tagLine2Parts.forEach((part) => {
+        ctx.fillStyle = part.color;
+        ctx.fillText(part.text, part.posX, tagY2);
+      });
 
       // cygames logo
       const cygamesHeight = usernameHeight;

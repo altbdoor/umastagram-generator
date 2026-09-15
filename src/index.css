@@ -1,8 +1,10 @@
 @import "react-easy-crop/react-easy-crop.css";
 
 @import "@fontsource/inter-tight/latin-400.css";
-@import "@fontsource/inter-tight/latin-700.css";
 @import "@fontsource/inter-tight/latin-ext-400.css";
+@import "@fontsource/inter-tight/latin-500.css";
+@import "@fontsource/inter-tight/latin-ext-500.css";
+@import "@fontsource/inter-tight/latin-700.css";
 @import "@fontsource/inter-tight/latin-ext-700.css";
 
 /* https://www.dafont.com/indigo-daisy.font */
@@ -18,6 +20,8 @@
 html {
   --text-base: 16px;
   --font-sans: "Inter Tight";
+  --font-weight-medium: 400;
+  --font-weight-semibold: 400;
 }
 
 /* ======================================== */
